@@ -1,59 +1,39 @@
 "use client";
 
-import {
+import ReactFlow, {
   Background,
   Controls,
-  MiniMap,
-  ReactFlow,
-  type Connection,
-  type Edge,
-  type EdgeChange,
-  type Node,
-  type NodeChange,
-  type NodeTypes,
+  applyNodeChanges,
+  applyEdgeChanges,
 } from "reactflow";
-import type { WorkflowNodeData } from "@/types/node.types";
+import "reactflow/dist/style.css";
+import { useWorkflowStore } from "@/store/workflowStore";
+import { nodeTypes } from "./nodeTypes";
 
-interface CanvasProps {
-  nodes: Node<WorkflowNodeData>[];
-  edges: Edge[];
-  nodeTypes: NodeTypes;
-  onNodeClick?: (node: Node<WorkflowNodeData>) => void;
-  onNodesChange?: (changes: NodeChange[]) => void;
-  onEdgesChange?: (changes: EdgeChange[]) => void;
-  onConnect?: (connection: Connection) => void;
-}
+export default function Canvas() {
+  const { nodes, edges, setNodes, setEdges } =
+    useWorkflowStore();
 
-export default function Canvas({
-  nodes,
-  edges,
-  nodeTypes,
-  onNodeClick,
-  onNodesChange,
-  onEdgesChange,
-  onConnect,
-}: CanvasProps) {
+  const handleNodesChange = (changes: any) => {
+    setNodes(applyNodeChanges(changes, nodes));
+  };
+
+  const handleEdgesChange = (changes: any) => {
+    setEdges(applyEdgeChanges(changes, edges));
+  };
+
   return (
-    <div className="h-full min-h-160 overflow-hidden rounded-3xl border border-white/10 bg-slate-950/80">
+    <div className="w-full h-screen">
       <ReactFlow
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
-        onNodeClick={(_, node) => onNodeClick?.(node)}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
+        onNodesChange={handleNodesChange}
+        onEdgesChange={handleEdgesChange}
         fitView
-        proOptions={{ hideAttribution: true }}
       >
-        <Background color="rgba(148, 163, 184, 0.25)" gap={24} />
-        <Controls className="bg-slate-950/90 text-white" />
-        <MiniMap
-          nodeColor="#22d3ee"
-          maskColor="rgba(2, 6, 23, 0.65)"
-          pannable
-          zoomable
-        />
+        <Background />
+        <Controls />
       </ReactFlow>
     </div>
   );

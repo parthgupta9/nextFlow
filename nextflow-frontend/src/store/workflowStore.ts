@@ -1,49 +1,23 @@
-import { create } from "zustand";
-import type { Edge, Node } from "reactflow";
-import type { WorkflowNodeData } from "@/types/node.types";
+import {create} from 'zustand';
+import {Node,Edge} from 'reactflow';
 
-interface WorkflowState {
-  nodes: Node<WorkflowNodeData>[];
+type WorkflowState = {
+  nodes: Node[];
   edges: Edge[];
-  selectedNodeId: string | null;
-  setNodes: (nodes: Node<WorkflowNodeData>[]) => void;
-  setEdges: (edges: Edge[]) => void;
-  selectNode: (nodeId: string | null) => void;
-  upsertNode: (node: Node<WorkflowNodeData>) => void;
-  removeNode: (nodeId: string) => void;
-  resetWorkflow: () => void;
-}
 
-const emptyState = {
-  nodes: [] as Node<WorkflowNodeData>[],
-  edges: [] as Edge[],
-  selectedNodeId: null as string | null,
+  setNodes: (nodes: Node[]) => void;
+  setEdges: (edges: Edge[]) => void;
+
+  addNode: (node: Node) => void;
 };
 
-export const useWorkflowStore = create<WorkflowState>((set) => ({
-  ...emptyState,
+export const useWorkflowStore=create<WorkflowState>((set) => ({
+  nodes: [],
+  edges: [],
   setNodes: (nodes) => set({ nodes }),
   setEdges: (edges) => set({ edges }),
-  selectNode: (selectedNodeId) => set({ selectedNodeId }),
-  upsertNode: (node) =>
-    set((state) => {
-      const index = state.nodes.findIndex((existingNode) => existingNode.id === node.id);
-
-      if (index === -1) {
-        return { nodes: [...state.nodes, node] };
-      }
-
-      const nodes = [...state.nodes];
-      nodes[index] = node;
-
-      return { nodes };
-    }),
-  removeNode: (nodeId) =>
+  addNode: (node) =>
     set((state) => ({
-      nodes: state.nodes.filter((node) => node.id !== nodeId),
-      edges: state.edges.filter(
-        (edge) => edge.source !== nodeId && edge.target !== nodeId,
-      ),
+      nodes: [...state.nodes, node],
     })),
-  resetWorkflow: () => set(emptyState),
 }));
