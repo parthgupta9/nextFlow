@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,7 +35,11 @@ export default function RootLayout({
             "radial-gradient(circle at top, rgba(56, 189, 248, 0.18), transparent 45%), linear-gradient(180deg, #04070f 0%, #090d18 100%)",
         }}
       >
+      <ClerkProvider>
         {children}
+      </ClerkProvider>
+        
+        
       </body>
     </html>
   );
