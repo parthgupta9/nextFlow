@@ -2,7 +2,7 @@
 
 import { Handle, Position } from "reactflow";
 
-export default function TextNode({ data }: { data?: { text: string } }) {
+export default function TextNode({ data }: { data: { text: string } }) {
   return (
     <div className="bg-white border rounded-md p-3 w-[180px] shadow">
       <p className="text-sm font-semibold mb-2">Text Node</p>
@@ -13,7 +13,10 @@ export default function TextNode({ data }: { data?: { text: string } }) {
         defaultValue={data?.text}
       />
 
-      {/* Output handle */}
+      {/* Input Handle */}
+      <Handle type="target" position={Position.Left} />
+
+      {/* Output Handle */}
       <Handle type="source" position={Position.Right} />
     </div>
   );

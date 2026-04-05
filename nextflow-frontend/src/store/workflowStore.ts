@@ -1,21 +1,35 @@
 import {create} from 'zustand';
-import {Node,Edge} from 'reactflow';
+import {Node,Edge,applyNodeChanges,applyEdgeChanges,addEdge} from 'reactflow';
 
 type WorkflowState = {
   nodes: Node[];
   edges: Edge[];
 
-  setNodes: (nodes: Node[]) => void;
-  setEdges: (edges: Edge[]) => void;
+     onNodesChange: (changes: any) => void;
+     onEdgesChange: (changes: any) => void;
+     onConnect: (params: any) => void;
 
   addNode: (node: Node) => void;
 };
 
-export const useWorkflowStore=create<WorkflowState>((set) => ({
+export const useWorkflowStore=create<WorkflowState>((set,get) => ({
   nodes: [],
   edges: [],
-  setNodes: (nodes) => set({ nodes }),
-  setEdges: (edges) => set({ edges }),
+
+  onNodesChange: (changes) =>
+    set({
+      nodes: applyNodeChanges(changes, get().nodes),
+    }),
+  onEdgesChange: (changes) => 
+    set({
+      edges: applyEdgeChanges(changes, get().edges),
+    }),
+  onConnect: (params) =>
+    set({
+      edges: addEdge(params, get().edges),
+
+    }),
+
   addNode: (node) =>
     set((state) => ({
       nodes: [...state.nodes, node],

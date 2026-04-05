@@ -3,24 +3,20 @@
 import ReactFlow, {
   Background,
   Controls,
-  applyNodeChanges,
-  applyEdgeChanges,
 } from "reactflow";
 import "reactflow/dist/style.css";
+
 import { useWorkflowStore } from "@/store/workflowStore";
 import { nodeTypes } from "./nodeTypes";
 
 export default function Canvas() {
-  const { nodes, edges, setNodes, setEdges } =
-    useWorkflowStore();
-
-  const handleNodesChange = (changes: any) => {
-    setNodes(applyNodeChanges(changes, nodes));
-  };
-
-  const handleEdgesChange = (changes: any) => {
-    setEdges(applyEdgeChanges(changes, edges));
-  };
+  const {
+    nodes,
+    edges,
+    onNodesChange,
+    onEdgesChange,
+    onConnect,
+  } = useWorkflowStore();
 
   return (
     <div className="w-full h-screen">
@@ -28,8 +24,9 @@ export default function Canvas() {
         nodes={nodes}
         edges={edges}
         nodeTypes={nodeTypes}
-        onNodesChange={handleNodesChange}
-        onEdgesChange={handleEdgesChange}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
         fitView
       >
         <Background />
